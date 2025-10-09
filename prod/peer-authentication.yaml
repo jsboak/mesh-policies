@@ -1,0 +1,24 @@
+# Namespace-wide strict mTLS.
+apiVersion: security.istio.io/v1
+kind: PeerAuthentication
+metadata:
+  name: default
+spec:
+  mtls:
+    mode: STRICT
+---
+# The frontend receives traffic from the Google Cloud load balancer, which is
+# not part of the mesh, so its serving port accepts plaintext.
+apiVersion: security.istio.io/v1
+kind: PeerAuthentication
+metadata:
+  name: frontend
+spec:
+  selector:
+    matchLabels:
+      app: frontend
+  mtls:
+    mode: STRICT
+  portLevelMtls:
+    "8080":
+      mode: PERMISSIVE
